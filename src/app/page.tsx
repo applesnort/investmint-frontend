@@ -31,17 +31,33 @@ export default async function Home() {
               </tr>
             </thead>
             <tbody>
-              {weatherData.map((forecast, index) => (
-                <tr
-                  key={index}
-                  className={index % 2 === 0 ? "bg-white" : "bg-gray-100"}
-                >
-                  <td className="border p-2 bg-slate-950">{forecast.date}</td>
-                  <td className="border p-2 bg-slate-950">{forecast.temperatureC}°C</td>
-                  <td className="border p-2 bg-slate-950">{forecast.temperatureF}°F</td>
-                  <td className="border p-2 bg-slate-950">{forecast.summary}</td>
-                </tr>
-              ))}
+              {weatherData.map(
+                (
+                  forecast: {
+                    date: string;
+                    temperatureC: number;
+                    temperatureF: number;
+                    summary: string;
+                  },
+                  index: number
+                ) => (
+                  <tr
+                    key={index}
+                    className={index % 2 === 0 ? "bg-white" : "bg-gray-100"}
+                  >
+                    <td className="border p-2 bg-slate-950">{forecast.date}</td>
+                    <td className="border p-2 bg-slate-950">
+                      {forecast.temperatureC}°C
+                    </td>
+                    <td className="border p-2 bg-slate-950">
+                      {forecast.temperatureF}°F
+                    </td>
+                    <td className="border p-2 bg-slate-950">
+                      {forecast.summary}
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>
