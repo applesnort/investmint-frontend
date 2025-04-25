@@ -1,12 +1,18 @@
 export default async function Home() {
   try {
+    // API base URL - use production URL or fallback to localhost for development
+    const apiBaseUrl =
+      process.env.NODE_ENV === "production"
+        ? "https://investmint-api.vercel.app"
+        : "http://localhost:5131";
+
     // Fetch the hello world message
-    const helloRes = await fetch("http://localhost:5131/api/HelloWorld");
+    const helloRes = await fetch(`${apiBaseUrl}/api/HelloWorld`);
     if (!helloRes.ok) throw new Error("Failed to fetch hello world data");
     const helloData = await helloRes.json();
 
     // Fetch the weather forecast data
-    const weatherRes = await fetch("http://localhost:5131/weatherforecast");
+    const weatherRes = await fetch(`${apiBaseUrl}/weatherforecast`);
     if (!weatherRes.ok) throw new Error("Failed to fetch weather data");
     const weatherData = await weatherRes.json();
 
