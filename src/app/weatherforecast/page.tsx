@@ -25,13 +25,13 @@ async function testApiConnection(url: string) {
   }
 }
 
-export default async function Home() {
+export default async function WeatherForecastPage() {
   try {
     // Get API URL using our utility
     const apiBaseUrl = getApiUrl();
     if (!apiBaseUrl) {
       return (
-        <div className="p-4">
+        <div className="p-4 bg-slate-950 min-h-screen">
           <ErrorDisplay message="API URL is not configured. Please set NEXT_PUBLIC_API_URL environment variable." />
           <div className="mt-4">
             <Link href="/debug" className="text-blue-400 hover:underline">
@@ -46,7 +46,7 @@ export default async function Home() {
     const isApiAvailable = await testApiConnection(apiBaseUrl);
     if (!isApiAvailable) {
       return (
-        <div className="p-4">
+        <div className="p-4 bg-slate-950 min-h-screen">
           <ErrorDisplay
             message={`Cannot connect to API server at ${apiBaseUrl}. Server may be down or URL may be incorrect.`}
           />
@@ -59,42 +59,19 @@ export default async function Home() {
       );
     }
 
-    // Fetch both endpoints in parallel using our utility
-    const [helloRes, weatherRes] = await Promise.all([
-      fetch(apiEndpoint("api/HelloWorld"), {
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }),
-      fetch(apiEndpoint("weatherforecast"), {
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }),
-    ]);
+    // Fetch weather forecast data using our utility
+    const weatherRes = await fetch(apiEndpoint("weatherforecast"), {
+      cache: "no-store", // Ensure fresh data on each request
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     // Check for errors
-    if (!helloRes.ok) {
-      const errorText = await helloRes.text();
-      return (
-        <div className="p-4">
-          <ErrorDisplay
-            message={`API Error (HelloWorld): ${helloRes.status} - ${errorText}`}
-          />
-          <div className="mt-4">
-            <Link href="/debug" className="text-blue-400 hover:underline">
-              View API Debug Information
-            </Link>
-          </div>
-        </div>
-      );
-    }
     if (!weatherRes.ok) {
       const errorText = await weatherRes.text();
       return (
-        <div className="p-4">
+        <div className="p-4 bg-slate-950 min-h-screen">
           <ErrorDisplay
             message={`API Error (Weather): ${weatherRes.status} - ${errorText}`}
           />
@@ -107,23 +84,12 @@ export default async function Home() {
       );
     }
 
-    // Parse responses
-    const [helloData, weatherData] = await Promise.all([
-      helloRes.json(),
-      weatherRes.json(),
-    ]);
+    // Parse response
+    const weatherData = await weatherRes.json();
 
     return (
-      <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Investmint Dashboard</h1>
-
-        <div className="mb-6 p-4 bg-blue-900 rounded shadow">
-          <h2 className="text-xl mb-2">API Message:</h2>
-          <p className="text-lg">{helloData.message}</p>
-          <p className="text-sm opacity-75 mt-1">
-            Endpoint: {apiEndpoint("api/HelloWorld")}
-          </p>
-        </div>
+      <div className="p-4 bg-slate-950 min-h-screen">
+        <h1 className="text-2xl font-bold mb-4">Weather Forecast</h1>
 
         <WeatherTable weatherData={weatherData} />
 
@@ -135,9 +101,9 @@ export default async function Home() {
       </div>
     );
   } catch (error) {
-    console.error("Home page error:", error);
+    console.error("Weather page error:", error);
     return (
-      <div className="p-4">
+      <div className="p-4 bg-slate-950 min-h-screen">
         <ErrorDisplay
           message={
             error instanceof Error ? error.message : "Unknown error occurred"
