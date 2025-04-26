@@ -33,6 +33,7 @@ export default async function WeatherForecastPage() {
       const error = new Error(
         "API URL is not configured. Please set NEXT_PUBLIC_API_URL environment variable."
       );
+      error.name = "ConfigurationError";
       return (
         <div className="p-4 bg-slate-950 min-h-screen">
           <ErrorDisplay {...error} />
@@ -51,6 +52,7 @@ export default async function WeatherForecastPage() {
       const error = new Error(
         `Cannot connect to API server at ${apiBaseUrl}. Server may be down or URL may be incorrect.`
       );
+      error.name = "ConnectionError";
       return (
         <div className="p-4 bg-slate-950 min-h-screen">
           <ErrorDisplay {...error} />
@@ -77,6 +79,7 @@ export default async function WeatherForecastPage() {
       const error = new Error(
         `API Error (Weather): ${weatherRes.status} - ${errorText}`
       );
+      error.name = "ApiError";
       return (
         <div className="p-4 bg-slate-950 min-h-screen">
           <ErrorDisplay {...error} />
@@ -109,6 +112,7 @@ export default async function WeatherForecastPage() {
     console.error("Weather page error:", error);
     const errorObj =
       error instanceof Error ? error : new Error("Unknown error occurred");
+    errorObj.name = errorObj.name || "UnknownError";
     return (
       <div className="p-4 bg-slate-950 min-h-screen">
         <ErrorDisplay {...errorObj} />

@@ -50,7 +50,7 @@ export default async function Home() {
     const isApiAvailable = await testApiConnection(apiBaseUrl);
     if (!isApiAvailable) {
       const error = new Error(
-        `Cannot connect to API server at ${apiBaseUrl}. Server may be down or URL may be incorrect.`
+        `Cannot connect to API server at ${apiBaseUrl}. Server may be down or URL may be incorrect. Current environment: ${process.env.NODE_ENV}`
       );
       error.name = "ConnectionError";
       return (
