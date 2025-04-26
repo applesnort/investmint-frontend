@@ -33,6 +33,7 @@ export default async function Home() {
       const error = new Error(
         "API URL is not configured. Please set NEXT_PUBLIC_API_URL environment variable."
       );
+      error.name = "ConfigurationError";
       return (
         <div className="p-4">
           <ErrorDisplay {...error} />
@@ -51,6 +52,7 @@ export default async function Home() {
       const error = new Error(
         `Cannot connect to API server at ${apiBaseUrl}. Server may be down or URL may be incorrect.`
       );
+      error.name = "ConnectionError";
       return (
         <div className="p-4">
           <ErrorDisplay {...error} />
@@ -85,6 +87,7 @@ export default async function Home() {
       const error = new Error(
         `API Error (HelloWorld): ${helloRes.status} - ${errorText}`
       );
+      error.name = "ApiError";
       return (
         <div className="p-4">
           <ErrorDisplay {...error} />
@@ -101,6 +104,7 @@ export default async function Home() {
       const error = new Error(
         `API Error (Weather): ${weatherRes.status} - ${errorText}`
       );
+      error.name = "ApiError";
       return (
         <div className="p-4">
           <ErrorDisplay {...error} />
@@ -144,6 +148,7 @@ export default async function Home() {
     console.error("Home page error:", error);
     const errorObj =
       error instanceof Error ? error : new Error("Unknown error occurred");
+    errorObj.name = errorObj.name || "UnknownError";
     return (
       <div className="p-4">
         <ErrorDisplay {...errorObj} />
