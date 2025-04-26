@@ -30,9 +30,12 @@ export default async function WeatherForecastPage() {
     // Get API URL using our utility
     const apiBaseUrl = getApiUrl();
     if (!apiBaseUrl) {
+      const error = new Error(
+        "API URL is not configured. Please set NEXT_PUBLIC_API_URL environment variable."
+      );
       return (
         <div className="p-4 bg-slate-950 min-h-screen">
-          <ErrorDisplay message="API URL is not configured. Please set NEXT_PUBLIC_API_URL environment variable." />
+          <ErrorDisplay {...error} />
           <div className="mt-4">
             <Link href="/debug" className="text-blue-400 hover:underline">
               View API Debug Information
@@ -45,11 +48,12 @@ export default async function WeatherForecastPage() {
     // Test API connection before making actual requests
     const isApiAvailable = await testApiConnection(apiBaseUrl);
     if (!isApiAvailable) {
+      const error = new Error(
+        `Cannot connect to API server at ${apiBaseUrl}. Server may be down or URL may be incorrect.`
+      );
       return (
         <div className="p-4 bg-slate-950 min-h-screen">
-          <ErrorDisplay
-            message={`Cannot connect to API server at ${apiBaseUrl}. Server may be down or URL may be incorrect.`}
-          />
+          <ErrorDisplay {...error} />
           <div className="mt-4">
             <Link href="/debug" className="text-blue-400 hover:underline">
               View API Debug Information
@@ -70,11 +74,12 @@ export default async function WeatherForecastPage() {
     // Check for errors
     if (!weatherRes.ok) {
       const errorText = await weatherRes.text();
+      const error = new Error(
+        `API Error (Weather): ${weatherRes.status} - ${errorText}`
+      );
       return (
         <div className="p-4 bg-slate-950 min-h-screen">
-          <ErrorDisplay
-            message={`API Error (Weather): ${weatherRes.status} - ${errorText}`}
-          />
+          <ErrorDisplay {...error} />
           <div className="mt-4">
             <Link href="/debug" className="text-blue-400 hover:underline">
               View API Debug Information
@@ -102,13 +107,11 @@ export default async function WeatherForecastPage() {
     );
   } catch (error) {
     console.error("Weather page error:", error);
+    const errorObj =
+      error instanceof Error ? error : new Error("Unknown error occurred");
     return (
       <div className="p-4 bg-slate-950 min-h-screen">
-        <ErrorDisplay
-          message={
-            error instanceof Error ? error.message : "Unknown error occurred"
-          }
-        />
+        <ErrorDisplay {...errorObj} />
         <div className="mt-4">
           <Link href="/debug" className="text-blue-400 hover:underline">
             View API Debug Information
